@@ -126,6 +126,14 @@ class _SigninScreenState extends State<SigninScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+                              if (states.contains(WidgetState.pressed)) {
+                                return Colors.blue.shade900;
+                              }
+                              return lightColorScheme.primary;
+                            },)
+                          ) ,
                           onPressed: () {
                             if (_formSignInKey.currentState!.validate() &&
                                 rememberPassword) {
@@ -136,13 +144,13 @@ class _SigninScreenState extends State<SigninScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                    'Please agree to tghe processing of data',
+                                    'Please agree to the processing of data',
                                   ),
                                 ),
                               );
                             }
                           },
-                          child: const Text('Sign up'),
+                          child: const Text('Sign in',style: TextStyle(fontSize: 18.0, color: Colors.white),),
                         ),
                       ),
                     ],
