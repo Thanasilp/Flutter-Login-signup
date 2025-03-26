@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:flutter_login/theme/theme.dart';
 import 'package:flutter_login/widgets/custom_scaffold.dart';
 
@@ -41,7 +42,7 @@ class _SigninScreenState extends State<SigninScreen> {
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
-                          color: lightColorScheme.primary,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 25.0),
@@ -103,7 +104,7 @@ class _SigninScreenState extends State<SigninScreen> {
                                     rememberPassword = value!;
                                   });
                                 },
-                                activeColor: lightColorScheme.primary,
+                                activeColor: Colors.black,
                               ),
                               const Text(
                                 'Remember me',
@@ -127,18 +128,23 @@ class _SigninScreenState extends State<SigninScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
-                              if (states.contains(WidgetState.pressed)) {
-                                return Colors.blue.shade900;
-                              }
-                              return lightColorScheme.primary;
-                            },)
-                          ) ,
+                            backgroundColor:
+                                WidgetStateProperty.resolveWith<Color>((
+                                  states,
+                                ) {
+                                  if (states.contains(WidgetState.pressed)) {
+                                    return Colors.grey.shade800;
+                                  }
+                                  return Colors.black;
+                                }),
+                          ),
                           onPressed: () {
                             if (_formSignInKey.currentState!.validate() &&
                                 rememberPassword) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Processing Data')),
+                                const SnackBar(
+                                  content: Text('Processing Data'),
+                                ),
                               );
                             } else if (!rememberPassword) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -150,8 +156,81 @@ class _SigninScreenState extends State<SigninScreen> {
                               );
                             }
                           },
-                          child: const Text('Sign in',style: TextStyle(fontSize: 18.0, color: Colors.white),),
+                          child: const Text(
+                            'Sign in',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
+                      ),
+                      const SizedBox(height: 25.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withValues(alpha: (0.5 * 255)),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 0,
+                              horizontal: 10,
+                            ),
+                            child: Text(
+                              'Sign in with',
+                              style: TextStyle(color: Colors.black45),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withValues(alpha: 0.5 * 255),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 25.0),
+                      // Incase having an account
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Bootstrap.facebook),
+                          Icon(Bootstrap.google),
+                          Icon(Bootstrap.apple),
+                          Icon(Bootstrap.twitter_x),
+                        ],
+                      ),
+                      const SizedBox(height: 25.0),
+                      // Incase not having an account
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Don\'t have an account?',
+                            style: TextStyle(color: Colors.black45),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (e) => const SigninScreen(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Sign up',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: lightColorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
