@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/screen/signin_screen.dart';
 import 'package:flutter_login/widgets/custom_scaffold.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -13,6 +14,38 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _signupWithEmailPassword() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
+
+      debugPrint('User Credential: $userCredential');
+      if (!mounted) return; // ป้องกันการใช้ context ถ้า widget ถูกลบไปแล้ว
+
+      // หากสำเร็จให้ขึ้นข้อความหรือไปยังหน้าถัดไป
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Sign up Successfull')));
+
+      // redirect to home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SigninScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Sign Failed: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -76,6 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 25.0),
                       // email
                       TextFormField(
+                        controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
@@ -103,6 +137,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 25.0),
                       // password
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
                         obscuringCharacter: '*',
                         validator: (value) {
@@ -132,6 +167,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 25.0),
                       // i agree to the processing
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Checkbox(
                             value: agreePersonalData,
@@ -174,11 +210,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           onPressed: () {
                             if (_formSignupKey.currentState!.validate() &&
                                 agreePersonalData) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Processing Data'),
-                                ),
-                              );
+                              _signupWithEmailPassword();
                             } else if (!agreePersonalData) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -254,7 +286,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               );
                             },
                             child: Text(
-                              'Sign in',
+                              'Sign up',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,

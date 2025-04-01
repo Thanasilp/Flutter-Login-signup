@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login/screen/homepage.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:flutter_login/theme/theme.dart';
 import 'package:flutter_login/widgets/custom_scaffold.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -11,8 +13,46 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
+  final TextEditingController _emailController = TextEditingController(
+    text: 'test@test.com',
+  );
+  final TextEditingController _passwordController = TextEditingController(
+    text: '123456',
+  );
   final _formSignInKey = GlobalKey<FormState>();
   bool rememberPassword = true;
+
+  /// ✅ ฟังก์ชัน Sign In ด้วย FirebaseAuth
+  Future<void> _signInWithEmailPassword() async {
+    if (_formSignInKey.currentState!.validate()) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim(),
+            );
+
+        print("User logged in: ${userCredential.user?.email}");
+
+        // แสดงข้อความเข้าสู่ระบบสำเร็จ
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Sign in Successful')));
+
+        // ไปยังหน้า Home (ต้องเปลี่ยนเป็นหน้าของคุณ)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Homepage(),
+          ), // 🔥 เปลี่ยนเป็นหน้า Home ของคุณ
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Sign in Failed: $e')));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +87,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       ),
                       SizedBox(height: 25.0),
                       TextFormField(
+                        controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
@@ -69,6 +110,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       ),
                       const SizedBox(height: 25.0),
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
                         obscuringCharacter: '*',
                         validator: (value) {
@@ -138,24 +180,7 @@ class _SigninScreenState extends State<SigninScreen> {
                                   return Colors.black;
                                 }),
                           ),
-                          onPressed: () {
-                            if (_formSignInKey.currentState!.validate() &&
-                                rememberPassword) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Processing Data'),
-                                ),
-                              );
-                            } else if (!rememberPassword) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Please agree to the processing of data',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                          onPressed: _signInWithEmailPassword,
                           child: const Text(
                             'Sign in',
                             style: TextStyle(
