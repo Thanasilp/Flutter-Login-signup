@@ -34,6 +34,9 @@ class _SigninScreenState extends State<SigninScreen> {
 
         print("User logged in: ${userCredential.user?.email}");
 
+        // ✅ ตรวจสอบว่า widget ยังอยู่ใน tree ก่อนใช้ context
+        if (!mounted) return;
+
         // แสดงข้อความเข้าสู่ระบบสำเร็จ
         ScaffoldMessenger.of(
           context,
@@ -43,10 +46,12 @@ class _SigninScreenState extends State<SigninScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Homepage(),
+            builder: (context) => const Homepage(),
           ), // 🔥 เปลี่ยนเป็นหน้า Home ของคุณ
         );
       } catch (e) {
+        // ✅ ตรวจสอบว่า widget ยังอยู่ใน tree ก่อนใช้ context
+        if (!mounted) return;
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Sign in Failed: $e')));

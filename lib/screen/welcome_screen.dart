@@ -10,6 +10,8 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return CustomScaffold(
       child: Column(
         children: [
@@ -20,7 +22,7 @@ class WelcomeScreen extends StatelessWidget {
               child: Center(
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: const TextSpan(
+                  text: TextSpan(
                     children: [
                       TextSpan(
                         text: 'Welcome Back!\n',
@@ -30,8 +32,9 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: '\nPlease Enter your personal details to your account',
-                        style: TextStyle(fontSize: 20),
+                        text:
+                            '\nPlease Enter your personal details to your account',
+                        style: TextStyle(fontSize: screenWidth * 0.05),
                       ),
                     ],
                   ),
@@ -40,11 +43,12 @@ class WelcomeScreen extends StatelessWidget {
             ),
           ),
           Flexible(
-            flex: 1,
+            flex: 2,
             child: Align(
               alignment: Alignment.bottomRight,
               child: Row(
                 children: [
+                  // เพิ่มระยะห่างระหว่างปุ่ม
                   Expanded(
                     child: WelcomeButton(
                       buttonText: 'Sign In',

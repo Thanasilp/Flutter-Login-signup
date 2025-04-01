@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/screen/books_page.dart';
+import 'package:flutter_login/screen/coffee_page.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
@@ -9,28 +10,35 @@ class Homepage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Homepage')),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+
         children: [
-          Expanded(
+          SizedBox(
+            width: double.infinity,
             child: ElevatedButton(
+              style: ButtonStyle(),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const BooksPage()),
                 );
               },
-              child: const Text('View Books'),
+              child: const Text('Books'),
             ),
           ),
-          Expanded(
+
+          SizedBox(
+            width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const BooksPage()),
+                  MaterialPageRoute(builder: (context) => const CoffeePage()),
                 );
               },
-              child: const Text('View Coffee'),
+              child: const Text('Coffee'),
             ),
           ),
         ],
